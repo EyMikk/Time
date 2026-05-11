@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} MonthFrm 
    Caption         =   "Select Month"
-   ClientHeight    =   3045
+   ClientHeight    =   3048
    ClientLeft      =   105
    ClientTop       =   450
    ClientWidth     =   4605
@@ -16,33 +16,36 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub CmdBoxOK_Click()
-Dim Fradato, Tildato As Date
-Dim Y, M, D, Y2, M2 As Integer
-Dim Sett As Worksheet
-Dim tall As Integer
-Set Sett = ThisWorkbook.Sheets("Settings")
+    ' FIX: riktig typedeklarasjon (var "Dim Fradato, Tildato As Date" → begge Variant)
+    Dim Fradato As Date
+    Dim Tildato As Date
+    Dim Y       As Integer
+    Dim M       As Integer
+    Dim Y2      As Integer
+    Dim M2      As Integer
+    Dim Sett    As Worksheet
 
-ThisWorkbook.Sheets("Settings").Cells(5, 2).Value = ComboBox1.ListIndex
-M = Sett.Cells(5, 2).Value - 1
-Y = Sett.Cells(6, 2).Value
-Y2 = Y
-M2 = M + 1
-If M2 = 1 Then Y = Y2 - 1
-If M2 = 1 Then M = 12
+    Set Sett = ThisWorkbook.Sheets("Settings")
 
+    Sett.Cells(5, 2).Value = ComboBox1.ListIndex
+    M  = Sett.Cells(5, 2).Value - 1
+    Y  = Sett.Cells(6, 2).Value
+    Y2 = Y
+    M2 = M + 1
 
-Fradato = DateSerial(Y, M, 25)
-Tildato = DateSerial(Y2, M2, 24)
+    ' Håndter januar: gå til desember forrige år
+    If M2 = 1 Then
+        Y = Y2 - 1
+        M = 12
+    End If
 
+    Fradato = DateSerial(Y, M, 25)
+    Tildato = DateSerial(Y2, M2, 24)
 
-'Tildato = Fradato + 30
-Unload Me
+    Unload Me
 
-Sett.Cells(7, 2).Value = Fradato
-Sett.Cells(8, 2).Value = Tildato
+    Sett.Cells(7, 2).Value = Fradato
+    Sett.Cells(8, 2).Value = Tildato
 
-MsgBox ("This will report the time from " & Fradato & " to " & Tildato)
-
+    MsgBox "This will report the time from " & Fradato & " to " & Tildato
 End Sub
-
-
